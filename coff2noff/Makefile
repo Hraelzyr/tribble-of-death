@@ -27,9 +27,9 @@
 #############################################################################
 include Makefile.dep
 
-CC=gcc
+CC=gcc-7
 CFLAGS= $(HOSTCFLAGS) -DRDATA -m32
-LD=gcc -m32
+LD=gcc-7 -m32
 RM = /bin/rm
 MV = /bin/mv
 

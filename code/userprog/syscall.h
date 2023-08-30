@@ -42,7 +42,9 @@
 #define SC_PrintChar 46
 #define SC_RandomNum 47
 #define SC_ReadString 48
+#define SC_ReadStringTillNL 65
 #define SC_PrintString 49
+#define SC_PrintStringUC 63
 #define SC_CreateFile 50
 #define SC_CreateSemaphore 51
 #define SC_Wait 52
@@ -82,7 +84,11 @@ int RandomNum();
 
 void ReadString(char *buffer, int length);
 
+void ReadStringTillNL(char *buffer);
+
 void PrintString(char *buffer);
+
+void PrintStringUC(char *buffer);
 
 /* Address space control operations: Exit, Exec, Execv, and Join */
 

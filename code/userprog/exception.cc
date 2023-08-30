@@ -199,11 +199,36 @@ void handle_SC_ReadString() {
     return move_program_counter();
 }
 
+void handle_SC_ReadStringTillNL() {
+    int memPtr = kernel->machine->ReadRegister(4);  // read address of C-string
+    int length=255;
+    if (length > MAX_READ_STRING_LENGTH) {  // avoid allocating large memory
+        DEBUG(dbgSys, "String length exceeds " << MAX_READ_STRING_LENGTH);
+        SysHalt();
+    }
+    char* buffer = SysReadString(length);
+    for (length=0;buffer[length]!='\0' && buffer[length]!='\n'; length++);
+    char bufferFin[length];
+    strncpy(bufferFin, buffer, length);
+    StringSys2User(bufferFin, memPtr);
+    delete[] buffer;
+    return move_program_counter();
+}
+
 void handle_SC_PrintString() {
     int memPtr = kernel->machine->ReadRegister(4);  // read address of C-string
     char* buffer = stringUser2System(memPtr);
 
     SysPrintString(buffer, strlen(buffer));
+    delete[] buffer;
+    return move_program_counter();
+}
+
+void handle_SC_PrintStringUC() {
+    int memPtr = kernel->machine->ReadRegister(4);
+    char* buffer = stringUser2System(memPtr);
+
+    SysPrintStringUC(buffer, strlen(buffer));
     delete[] buffer;
     return move_program_counter();
 }
@@ -435,6 +460,8 @@ void ExceptionHandler(ExceptionType which) {
                     return handle_SC_ReadString();
                 case SC_PrintString:
                     return handle_SC_PrintString();
+		case SC_PrintStringUC:
+		    return handle_SC_PrintStringUC();
                 case SC_CreateFile:
                     return handle_SC_CreateFile();
                 case SC_Open:
@@ -461,6 +488,8 @@ void ExceptionHandler(ExceptionType which) {
                     return handle_SC_Signal();
                 case SC_GetPid:
                     return handle_SC_GetPid();
+		case SC_ReadStringTillNL:
+		    return handle_SC_ReadStringTillNL();
                 /**
                  * Handle all not implemented syscalls
                  * If you want to write a new handler for syscall:
