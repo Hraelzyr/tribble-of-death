@@ -5,7 +5,7 @@
 
 int main() {
     int child = Exec("ascii");
-    Sleep(1e10);
+    Sleep(1e6);
     PrintString("Soyuz nerushimy");
     Join(child);
     return 0;

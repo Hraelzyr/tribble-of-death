@@ -41,7 +41,7 @@ Alarm::Alarm(bool doRandom) { timer = new Timer(doRandom, this); timeLeft=0; sle
 //----------------------------------------------------------------------
 
 void Alarm::CallBack() {
-    if (timeLeft>0) timeLeft-=TimerTicks;
+    if (timeLeft>0) timeLeft--;
     if (timeLeft<=0 && sleeper!=nullptr){
 	kernel->scheduler->ReadyToRun(sleeper);
 	this->sleeper=nullptr;
