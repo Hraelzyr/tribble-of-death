@@ -90,6 +90,8 @@ void PrintString(char *buffer);
 
 void PrintStringUC(char *buffer);
 
+void Sleep(int delay);
+
 /* Address space control operations: Exit, Exec, Execv, and Join */
 
 /* This user program is done (status = 0 means exited normally). */

@@ -1859,8 +1859,8 @@ disk.o: ../machine/disk.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  ../threads/pcb.h
 alarm.o: ../threads/alarm.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/alarm.h ../lib/utility.h \
- ../machine/callback.h ../machine/timer.h ../threads/main.h \
- ../lib/debug.h ../lib/sysdep.h /usr/include/c++/7/iostream \
+ ../machine/callback.h ../machine/timer.h ../threads/thread.h \
+ ../lib/sysdep.h /usr/include/c++/7/iostream \
  /usr/include/x86_64-linux-gnu/c++/7/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/7/bits/os_defines.h \
  /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -1991,10 +1991,10 @@ alarm.o: ../threads/alarm.cc /usr/include/stdc-predef.h \
  /usr/include/c++/7/bits/basic_ios.tcc \
  /usr/include/c++/7/bits/ostream.tcc /usr/include/c++/7/istream \
  /usr/include/c++/7/bits/istream.tcc /usr/include/c++/7/stdlib.h \
- /usr/include/string.h /usr/include/strings.h ../threads/kernel.h \
- ../threads/thread.h ../machine/machine.h ../machine/translate.h \
- ../userprog/addrspace.h ../filesys/filesys.h ../filesys/openfile.h \
- ../filesys/filetable.h ../threads/scheduler.h ../lib/list.h \
+ /usr/include/string.h /usr/include/strings.h ../machine/machine.h \
+ ../machine/translate.h ../userprog/addrspace.h ../filesys/filesys.h \
+ ../filesys/openfile.h ../filesys/filetable.h ../threads/main.h \
+ ../lib/debug.h ../threads/kernel.h ../threads/scheduler.h ../lib/list.h \
  ../lib/list.cc ../machine/interrupt.h ../machine/stats.h ../lib/bitmap.h \
  ../threads/stable.h ../threads/sem.h ../threads/ptable.h \
  ../threads/pcb.h

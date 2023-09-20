@@ -381,6 +381,16 @@ void handle_SC_Wait() {
     return move_program_counter();
 }
 
+void handle_SC_Sleep(){
+    int delay = kernel->machine->ReadRegister(4);
+    kernel->alarm->WaitUntil(delay);
+    auto crt = kernel->interrupt->getLevel();
+    kernel->interrupt->SetLevel(IntOff);
+    kernel->currentThread->Sleep(false);
+    kernel->interrupt->SetLevel(crt);
+    return move_program_counter();
+}
+
 void handle_SC_Signal() {
     int virtAddr = kernel->machine->ReadRegister(4);
 
@@ -472,6 +482,8 @@ void ExceptionHandler(ExceptionType which) {
                     return handle_SC_Signal();
                 case SC_GetPid:
                     return handle_SC_GetPid();
+                case SC_Sleep:
+                    return handle_SC_Sleep();
                 /**
                  * Handle all not implemented syscalls
                  * If you want to write a new handler for syscall:
