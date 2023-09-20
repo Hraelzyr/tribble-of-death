@@ -50,6 +50,8 @@
 #define SC_Wait 52
 #define SC_Signal 53
 #define SC_GetPid 54
+#define SC_Fork 66
+#define SC_Sleep 67
 
 #ifndef IN_ASM
 
@@ -83,8 +85,6 @@ void PrintChar(char character);
 int RandomNum();
 
 void ReadString(char *buffer, int length);
-
-void ReadStringTillNL(char *buffer);
 
 void PrintString(char *buffer);
 

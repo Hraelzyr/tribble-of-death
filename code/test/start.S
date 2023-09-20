@@ -226,14 +226,6 @@ ReadString:
 	j	$31
 	.end ReadString
 
-	.globl ReadStringTillNL
-	.ent ReadStringTillNL
-ReadStringTillNL:
-	addiu $2,$0,SC_ReadStringTillNL
-	syscall
-	j	$31
-	.end ReadStringTillNL
-
 	.globl PrintString
 	.ent PrintString
 PrintString:
