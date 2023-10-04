@@ -18,10 +18,16 @@
 #define ALARM_H
 
 #include "copyright.h"
-#include "utility.h"
+//#include "utility.h"
 #include "callback.h"
 #include "timer.h"
 #include "thread.h"
+#include <vector>
+
+typedef struct SleepObj_ {
+    Thread* sleeper;
+    int delay;
+} SleepObj;
 
 // The following class defines a software alarm clock.
 class Alarm : public CallBackObj {
@@ -35,8 +41,7 @@ class Alarm : public CallBackObj {
 
    private:
     Timer *timer;  // the hardware timer device
-    Thread* sleeper;
-    int timeLeft;
+    std::vector<SleepObj> sleepers;
 
     void CallBack();  // called when the hardware
                       // timer generates an interrupt

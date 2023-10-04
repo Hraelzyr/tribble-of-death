@@ -7,6 +7,8 @@ make
 ../build.linux/nachos -x halt
 ../build.linux/nachos -x test_syscall
 
+../build.linux/nachos -x main
+
 echo "123" | ../build.linux/nachos -x num_io | grep -q "123Machine halting!"
 echo "0" | ../build.linux/nachos -x num_io | grep -q "0Machine halting!"
 echo "-0" | ../build.linux/nachos -x num_io | grep -q "0Machine halting!"

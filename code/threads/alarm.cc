@@ -20,7 +20,7 @@
 //		occur at random, instead of fixed, intervals.
 //----------------------------------------------------------------------
 
-Alarm::Alarm(bool doRandom) { timer = new Timer(doRandom, this); timeLeft=0; sleeper=nullptr;}
+Alarm::Alarm(bool doRandom) { timer = new Timer(doRandom, this);}
 
 //----------------------------------------------------------------------
 // Alarm::CallBack
@@ -41,11 +41,21 @@ Alarm::Alarm(bool doRandom) { timer = new Timer(doRandom, this); timeLeft=0; sle
 //----------------------------------------------------------------------
 
 void Alarm::CallBack() {
-    if (timeLeft>0) timeLeft--;
-    if (timeLeft<=0 && sleeper!=nullptr){
-	kernel->scheduler->ReadyToRun(sleeper);
-	this->sleeper=nullptr;
+    for (int i=0; i<sleepers.size(); i++){
+	    //cout<<"thread.delay: "<<sleepers[i].delay<<"\n";
+	    if (sleepers[i].delay>0){
+	        sleepers[i].delay--;
+	    }
+	    if (sleepers[i].delay<=0 && sleepers[i].sleeper!=nullptr){
+		kernel->scheduler->ReadyToRun(sleepers[i].sleeper);
+		sleepers[i].sleeper=nullptr;
+	    }
     }
+    vector<SleepObj> temp;
+    for (auto thread: sleepers){
+	if (thread.sleeper) temp.push_back(thread);
+    }
+    sleepers=temp;
     Interrupt *interrupt = kernel->interrupt;
     MachineStatus status = interrupt->getStatus();
 
@@ -55,6 +65,6 @@ void Alarm::CallBack() {
 }
 
 void Alarm::WaitUntil(int x){
-    sleeper=kernel->currentThread;
-    timeLeft=x;
+    SleepObj in = SleepObj{kernel->currentThread, x};
+    sleepers.push_back(in);
 }
