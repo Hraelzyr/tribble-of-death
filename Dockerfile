@@ -6,5 +6,7 @@ COPY . /home
 
 WORKDIR /home/nachos-project
 RUN bash build_nachos.sh
+RUN bash coff2noff.sh
+
 WORKDIR /home
 CMD bash
