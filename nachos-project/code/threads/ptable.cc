@@ -32,13 +32,6 @@ int PTable::ExecUpdate(char* name) {
         bmsem->V();
         return -1;
     }
-    // So sánh tên chương trình và tên của currentThread để chắc chắn rằng
-    // chương trình này không gọi thực thi chính nó.
-    if (strcmp(name, kernel->currentThread->getName()) == 0) {
-        DEBUG(dbgSys, "\nPTable::Exec : Can't not execute itself.\n");
-        bmsem->V();
-        return -1;
-    }
 
     // Tìm slot trống trong bảng Ptable.
     int index = this->GetFreeSlot();

@@ -323,6 +323,28 @@ void handle_SC_Exec() {
 }
 
 /**
+ * @brief handle System Call Fork
+ * @param virtAddr: virtual address of user string name (get from R4)
+ * @return -1 if failed to Fork, otherwise return id of new process
+ * (write result to R2)
+ */
+void handle_SC_Fork() {
+    char* name = strdup(kernel->currentThread->getName());
+    if (name == NULL) {
+        DEBUG(dbgSys, "\n Not enough memory in System");
+        ASSERT(false);
+        kernel->machine->WriteRegister(2, -1);
+        return move_program_counter();
+    }
+
+    kernel->machine->WriteRegister(2, SysExec(name));
+    // DO NOT DELETE NAME, THE THEARD WILL DELETE IT LATER
+    // delete[] name;
+
+    return move_program_counter();
+}
+
+/**
  * @brief handle System Call Join
  * @param id: thread id (get from R4)
  * @return -1 if failed to join, otherwise return exit code of
@@ -484,6 +506,8 @@ void ExceptionHandler(ExceptionType which) {
                     return handle_SC_GetPid();
                 case SC_Sleep:
                     return handle_SC_Sleep();
+                case SC_Fork:
+                    return handle_SC_Fork();
                 /**
                  * Handle all not implemented syscalls
                  * If you want to write a new handler for syscall:

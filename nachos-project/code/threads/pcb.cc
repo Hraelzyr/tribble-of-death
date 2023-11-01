@@ -61,6 +61,8 @@ int PCB::Exec(char* filename, int id) {
 
     //  Đặt processID của thread này là id.
     this->thread->processID = id;
+    this->thread->Elter = kernel->currentThread;
+    kernel->currentThread->SaveUserState();
     // Đặt parrentID của thread này là processID của thread gọi thực thi Exec
     this->parentID = kernel->currentThread->processID;
     // Gọi thực thi Fork(StartProcess_2,id) => Ta cast thread thành kiểu int,

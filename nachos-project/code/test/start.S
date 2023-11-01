@@ -74,6 +74,14 @@ Exec:
 	j	$31
 	.end Exec
 
+	.globl Fork
+	.ent	Fork
+Fork:
+	addiu $2,$0,SC_Fork
+	syscall
+	j	$31
+	.end Fork
+
 	.globl ExecV
 	.ent	ExecV
 ExecV:

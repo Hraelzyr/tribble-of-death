@@ -150,6 +150,7 @@ AddrSpace::AddrSpace(char *fileName) {
         pageTable[i].virtualPage = i;  // for now, virtual page # = phys page #
         pageTable[i].physicalPage = kernel->gPhysPageBitMap->FindAndSet();
         // cerr << pageTable[i].physicalPage << endl;
+        //TODO set these to be identical to parent addrspace
         pageTable[i].valid = TRUE;
         pageTable[i].use = FALSE;
         pageTable[i].dirty = FALSE;
@@ -157,9 +158,19 @@ AddrSpace::AddrSpace(char *fileName) {
         // a separate page, we could set its
         // pages to be read-only
         // xóa các trang này trên memory
-        bzero(&(kernel->machine
+        if (!kernel->currentThread->Elter) bzero(&(kernel->machine
                     ->mainMemory[pageTable[i].physicalPage * PageSize]),
               PageSize);
+        else{
+            auto Elter=kernel->currentThread->Elter;
+            memcpy(&(kernel->machine
+                    ->mainMemory[pageTable[i].physicalPage * PageSize]),
+                   &(kernel->machine
+                    ->mainMemory[Elter->space->pageTable[i].physicalPage * PageSize]),
+              PageSize);
+            kernel->currentThread->RestoreUserState();
+            cerr<<kernel->currentThread->processID;
+        }
         DEBUG(dbgAddr, "phyPage " << pageTable[i].physicalPage);
     }
 

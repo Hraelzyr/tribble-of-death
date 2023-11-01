@@ -4,9 +4,10 @@
 #define MAX_STUDENT 5
 
 int main() {
-    int child = Exec("ascii");
-    Sleep(1e6);
+    int child;
     PrintString("Soyuz nerushimy");
+    child = Fork();
+    //Sleep(1e6);
     Join(child);
     return 0;
 }
