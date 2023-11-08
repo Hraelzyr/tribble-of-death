@@ -4,10 +4,8 @@
 #define MAX_STUDENT 5
 
 int main() {
-    int child;
-    PrintString("Soyuz nerushimy");
-    child = Fork();
-    //Sleep(1e6);
-    Join(child);
+    int x=5;
+    PrintString("Soyuz nerushimy ");
+    PrintStringUC("Respublik Svobodnykh\n");
     return 0;
 }
