@@ -148,49 +148,6 @@ void AddrSpace::CreatePageFor(int vpn){
         return;
     }
     // first, set up the translation
-<<<<<<< HEAD
-    pageTable = new TranslationEntry[numPages];
-    for (i = 0; i < numPages; i++) {
-        pageTable[i].virtualPage = i;  // for now, virtual page # = phys page #
-        pageTable[i].physicalPage = kernel->gPhysPageBitMap->FindAndSet();
-        // cerr << pageTable[i].physicalPage << endl;
-        //TODO set these to be identical to parent addrspace
-        pageTable[i].valid = TRUE;
-        pageTable[i].use = FALSE;
-        pageTable[i].dirty = FALSE;
-        pageTable[i].readOnly = FALSE;  // if the code segment was entirely on
-        // a separate page, we could set its
-        // pages to be read-only
-        // xóa các trang này trên memory
-        if (!kernel->currentThread->Elter) {
-            bzero(&(kernel->machine
-                    ->mainMemory[pageTable[i].physicalPage * PageSize]),
-              PageSize);
-
-               if (noffH.code.size > 0) {
-                executable->ReadAt(
-                    &(kernel->machine->mainMemory[noffH.code.virtualAddr]) +
-                        (pageTable[i].physicalPage * PageSize), PageSize, noffH.code.inFileAddr + (i * PageSize));
-                }
-
-                if (noffH.initData.size > 0) {
-                    executable->ReadAt(
-                        &(kernel->machine->mainMemory[noffH.initData.virtualAddr]) +
-                        (pageTable[i].physicalPage * PageSize), PageSize, noffH.initData.inFileAddr + (i * PageSize));
-                }
-
-        } else{
-            auto Elter=kernel->currentThread->Elter;
-            memcpy(&(kernel->machine
-                    ->mainMemory[pageTable[i].physicalPage * PageSize]),
-                   &(kernel->machine
-                    ->mainMemory[Elter->space->pageTable[i].physicalPage * PageSize]),
-              PageSize);
-            //kernel->currentThread->RestoreUserState();
-            //cerr<<kernel->currentThread->processID;
-        }
-        DEBUG(dbgAddr, "phyPage " << pageTable[i].physicalPage);
-=======
     int i=vpn;
     pageTable[i].physicalPage = kernel->gPhysPageBitMap->FindAndSet();
     pageTable[i].valid = TRUE;
@@ -206,12 +163,9 @@ void AddrSpace::CreatePageFor(int vpn){
             PageSize);
         kernel->currentThread->RestoreUserState();
         cerr<<kernel->currentThread->processID;
->>>>>>> demand-paging
     }
     DEBUG(dbgAddr, "phyPage " << pageTable[i].physicalPage);
 
-<<<<<<< HEAD
-=======
     if (noffH.code.size > 0) {
             executable->ReadAt(
                 &(kernel->machine->mainMemory[noffH.code.virtualAddr]) +
@@ -225,7 +179,6 @@ void AddrSpace::CreatePageFor(int vpn){
                     (pageTable[i].physicalPage * PageSize),
                 PageSize, noffH.initData.inFileAddr + (i * PageSize));
     }
->>>>>>> demand-paging
 
     kernel->addrLock->V();
     return;
@@ -243,7 +196,7 @@ void AddrSpace::CreatePageFor(int vpn){
 void AddrSpace::Execute() {
     kernel->currentThread->space = this;
 
-    printf("%x\n",kernel->currentThread->Elter);
+    //printf("%d\n",kernel->currentThread->Elter->processID);
     if(kernel->currentThread->Elter == NULL)
         this->InitRegisters();  // set the initial register values
     else
