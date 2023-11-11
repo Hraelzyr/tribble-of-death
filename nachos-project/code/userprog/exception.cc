@@ -337,7 +337,13 @@ void handle_SC_Fork() {
         return move_program_counter();
     }
 
-    kernel->machine->WriteRegister(2, SysExec(name));
+    if(kernel->currentThread->Elter == NULL) {
+        kernel->machine->WriteRegister(2, SysExec(name));
+    }
+    else {
+        kernel->machine->WriteRegister(2, 0);
+        kernel->currentThread->Elter = NULL;
+    }
     // DO NOT DELETE NAME, THE THEARD WILL DELETE IT LATER
     // delete[] name;
 
