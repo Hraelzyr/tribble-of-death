@@ -8,6 +8,7 @@ int main() {
     PrintString("Soyuz nerushimy");
     child = Fork();
     //Sleep(1e6);
+    PrintString("Between Fork and Join");
     Join(child);
     return 0;
 }
