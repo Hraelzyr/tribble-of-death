@@ -441,6 +441,12 @@ void handle_SC_GetPid() {
     return move_program_counter();
 }
 
+void handle_PageAlloc(){
+    int failingAddr = kernel->machine->ReadRegister(BadVAddrReg);
+    int vpn = failingAddr/PageSize;
+    kernel->currentThread->space->CreatePageFor(vpn);
+}
+
 void ExceptionHandler(ExceptionType which) {
     int type = kernel->machine->ReadRegister(2);
 
@@ -452,6 +458,8 @@ void ExceptionHandler(ExceptionType which) {
             DEBUG(dbgSys, "Switch to system mode\n");
             break;
         case PageFaultException:
+            handle_PageAlloc();
+            return;
         case ReadOnlyException:
         case BusErrorException:
         case AddressErrorException:

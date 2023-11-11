@@ -86,9 +86,10 @@ AddrSpace::AddrSpace() {
 AddrSpace::~AddrSpace() {
     int i;
     for (i = 0; i < numPages; i++) {
-        kernel->gPhysPageBitMap->Clear(pageTable[i].physicalPage);
+        if (pageTable[i].valid) kernel->gPhysPageBitMap->Clear(pageTable[i].physicalPage);
     }
     delete[] pageTable;
+    delete executable;
 }
 
 //----------------------------------------------------------------------
@@ -103,18 +104,34 @@ AddrSpace::~AddrSpace() {
 
 AddrSpace::AddrSpace(char *fileName) {
     OpenFile *executable = kernel->fileSystem->Open(fileName);
-    NoffHeader noffH;
-    unsigned int i, size, j, offset;
-    unsigned int numCodePage,
-        numDataPage;  // số trang cho phần code và phần initData
-    int lastCodePageSize, lastDataPageSize, firstDataPageSize,
-        tempDataSize;  // kích thước ghi vào trang cuối Code, initData, và trang
-                       // đầu của initData
 
+    NoffHeader noffH;
+    executable->ReadAt((char *)&noffH, sizeof(noffH), 0);
+    if ((noffH.noffMagic != NOFFMAGIC) &&
+        (WordToHost(noffH.noffMagic) == NOFFMAGIC))
+        SwapHeader(&noffH);
+    ASSERT(noffH.noffMagic == NOFFMAGIC);
+    numPages = (noffH.code.size+noffH.initData.size+UserStackSize)/PageSize;
+    pageTable = new TranslationEntry[numPages];
+    for (unsigned int i = 0; i < numPages; i++) {
+        pageTable[i].virtualPage = i;  // for now, virtual page # = phys page #
+        pageTable[i].physicalPage = -1;
+        // cerr << pageTable[i].physicalPage << endl;
+        //TODO set these to be identical to parent addrspace
+        pageTable[i].valid = FALSE;
+        pageTable[i].use = FALSE;
+        pageTable[i].dirty = FALSE;
+        pageTable[i].readOnly = FALSE;
+    }
     if (executable == NULL) {
         DEBUG(dbgFile, "\n Error opening file.");
         return;
     }
+    this->executable=executable;
+}
+
+void AddrSpace::CreatePageFor(int vpn){
+    NoffHeader noffH;
     //đọc header của file
     executable->ReadAt((char *)&noffH, sizeof(noffH), 0);
     if ((noffH.noffMagic != NOFFMAGIC) &&
@@ -122,29 +139,16 @@ AddrSpace::AddrSpace(char *fileName) {
         SwapHeader(&noffH);
     ASSERT(noffH.noffMagic == NOFFMAGIC);
     kernel->addrLock->P();
-    // how big is address space?
-    size = noffH.code.size + noffH.initData.size + noffH.uninitData.size +
-           UserStackSize;  // we need to increase the size
-                           // to leave room for the stack
-    numPages = divRoundUp(size, PageSize);
-    size = numPages * PageSize;
-
-    ASSERT(numPages <= NumPhysPages);  // check we're not trying
-                                       // to run anything too big --
-                                       // at least until we have
-                                       // virtual memory
-
     // Check the available memory enough to load new process
     // debug
-    if (numPages > kernel->gPhysPageBitMap->NumClear()) {
+    if (!kernel->gPhysPageBitMap->NumClear()) {
         DEBUG(dbgAddr, "Not enough free space");
         numPages = 0;
-        delete executable;
         kernel->addrLock->V();
         return;
     }
-    DEBUG(dbgAddr, "Initializing address space: " << numPages << ", " << size);
     // first, set up the translation
+<<<<<<< HEAD
     pageTable = new TranslationEntry[numPages];
     for (i = 0; i < numPages; i++) {
         pageTable[i].virtualPage = i;  // for now, virtual page # = phys page #
@@ -186,11 +190,44 @@ AddrSpace::AddrSpace(char *fileName) {
             //cerr<<kernel->currentThread->processID;
         }
         DEBUG(dbgAddr, "phyPage " << pageTable[i].physicalPage);
+=======
+    int i=vpn;
+    pageTable[i].physicalPage = kernel->gPhysPageBitMap->FindAndSet();
+    pageTable[i].valid = TRUE;
+    if (!kernel->currentThread->Elter) bzero(&(kernel->machine
+                ->mainMemory[pageTable[i].physicalPage * PageSize]),
+            PageSize);
+    else{
+        auto Elter=kernel->currentThread->Elter;
+        memcpy(&(kernel->machine
+                ->mainMemory[pageTable[i].physicalPage * PageSize]),
+                &(kernel->machine
+                ->mainMemory[Elter->space->pageTable[i].physicalPage * PageSize]),
+            PageSize);
+        kernel->currentThread->RestoreUserState();
+        cerr<<kernel->currentThread->processID;
+>>>>>>> demand-paging
+    }
+    DEBUG(dbgAddr, "phyPage " << pageTable[i].physicalPage);
+
+<<<<<<< HEAD
+=======
+    if (noffH.code.size > 0) {
+            executable->ReadAt(
+                &(kernel->machine->mainMemory[noffH.code.virtualAddr]) +
+                    (pageTable[i].physicalPage * PageSize),
+                PageSize, noffH.code.inFileAddr + (i * PageSize));
     }
 
+    if (noffH.initData.size > 0) {
+            executable->ReadAt(
+                &(kernel->machine->mainMemory[noffH.initData.virtualAddr]) +
+                    (pageTable[i].physicalPage * PageSize),
+                PageSize, noffH.initData.inFileAddr + (i * PageSize));
+    }
+>>>>>>> demand-paging
 
     kernel->addrLock->V();
-    delete executable;
     return;
 }
 
