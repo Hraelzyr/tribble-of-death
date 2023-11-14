@@ -10,13 +10,19 @@
 #define SCHEDULER_H
 
 #include "copyright.h"
-#include "list.h"
+//#include "list.h"
 #include "thread.h"
+#include <queue>
 
 // The following class defines the scheduler/dispatcher abstraction --
 // the data structures and operations needed to keep track of which
 // thread is running, and which threads are ready but not running.
-
+class Compare{
+public:
+   bool operator()(Thread* a, Thread* b){
+        return a->processID<b->processID;
+    }
+};
 class Scheduler {
    public:
     Scheduler();   // Initialize list of ready threads
@@ -35,7 +41,7 @@ class Scheduler {
     // SelfTest for scheduler is implemented in class Thread
 
    private:
-    List<Thread*>* readyList;  // queue of threads that are ready to run,
+    priority_queue<Thread*, vector<Thread*>, Compare> readyList;  // queue of threads that are ready to run,
                                // but not running
     Thread* toBeDestroyed;     // finishing thread to be destroyed
                                // by the next thread that runs

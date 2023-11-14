@@ -30,7 +30,7 @@
 //----------------------------------------------------------------------
 
 Scheduler::Scheduler() {
-    readyList = new List<Thread *>;
+    //readyList = new List<Thread *>;
     toBeDestroyed = NULL;
 }
 
@@ -39,7 +39,7 @@ Scheduler::Scheduler() {
 // 	De-allocate the list of ready threads.
 //----------------------------------------------------------------------
 
-Scheduler::~Scheduler() { delete readyList; }
+Scheduler::~Scheduler() { /*delete readyList;*/ }
 
 //----------------------------------------------------------------------
 // Scheduler::ReadyToRun
@@ -54,7 +54,7 @@ void Scheduler::ReadyToRun(Thread *thread) {
     DEBUG(dbgThread, "Putting thread on ready list: " << thread->getName());
 
     thread->setStatus(READY);
-    readyList->Append(thread);
+    readyList.push(thread);
 }
 
 //----------------------------------------------------------------------
@@ -68,10 +68,12 @@ void Scheduler::ReadyToRun(Thread *thread) {
 Thread *Scheduler::FindNextToRun() {
     ASSERT(kernel->interrupt->getLevel() == IntOff);
 
-    if (readyList->IsEmpty()) {
+    if (readyList.empty()) {
         return NULL;
     } else {
-        return readyList->RemoveFront();
+        auto out = readyList.top();
+        readyList.pop();
+        return out;
     }
 }
 
@@ -162,5 +164,5 @@ void Scheduler::CheckToBeDestroyed() {
 //----------------------------------------------------------------------
 void Scheduler::Print() {
     cout << "Ready list contents:\n";
-    readyList->Apply(ThreadPrint);
+    //readyList->Apply(ThreadPrint);
 }

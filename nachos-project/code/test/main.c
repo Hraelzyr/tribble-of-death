@@ -4,9 +4,16 @@
 #define MAX_STUDENT 5
 
 int main() {
-    int child = Exec("ascii");
-    Sleep(1e6);
-    PrintString("Soyuz nerushimy");
+    int child, child2;
+    child = Exec("random");
+    Sleep(100);
+    child2 = Exec("ascii");
+    PrintString("Child: ");
+    PrintNum(child);
+    PrintString("Child2: ");
+    PrintNum(child2);
     Join(child);
+    Join(child2);
+
     return 0;
 }
