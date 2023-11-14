@@ -206,7 +206,7 @@ AddrSpace::AddrSpace(char *fileName) {
 void AddrSpace::Execute() {
     kernel->currentThread->space = this;
 
-    printf("%x\n",kernel->currentThread->Elter);
+    //printf("%x\n",kernel->currentThread->Elter);
     if(kernel->currentThread->Elter == NULL)
         this->InitRegisters();  // set the initial register values
     else
