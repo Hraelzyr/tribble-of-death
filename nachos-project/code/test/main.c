@@ -5,8 +5,7 @@
 
 int main() {
     int child, child2;
-    child = Exec("random");
-    Sleep(100);
+    child = Exec("ascii");
     child2 = Exec("ascii");
     PrintString("Child: ");
     PrintNum(child);

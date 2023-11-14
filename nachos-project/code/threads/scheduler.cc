@@ -75,32 +75,32 @@ Thread *Scheduler::FindNextToRun() {
     if (readyList->IsEmpty()) {
         return NULL;
     } else {
-        cout<<"Readylist of size "<<readyList->NumInList()<<" before\n";
-        //auto temp = new SortedList<Thread *>(comp_thrd);
+        auto temp = new SortedList<Thread *>(comp_thrd);
         int num = std::rand();
-        int size = readyList->NumInList()+1;
-        int total = size*(size+1)/2;
+        int size=0;
+        ListIterator<Thread*> iter(readyList);
+        for (; !iter.IsDone(); iter.Next()) {
+            size+=iter.Item()->processID+1;
+        }
         num = num%size;
-        // while (readyList->NumInList()>0) {
-        //     auto elem = readyList->RemoveFront();
-        //     num-=elem->processID+1;
-        //     if (num>0 && readyList->NumInList()){
-        //         temp->Insert(elem);
-        //     }else{
-        //         readyList->Insert(elem);
-        //         break;
-        //     }
-        // }
+        while (readyList->NumInList()>0) {
+            auto elem = readyList->RemoveFront();
+            num-=elem->processID+1;
+            if (num>0 && readyList->NumInList()){
+                temp->Insert(elem);
+            }else{
+                readyList->Insert(elem);
+                break;
+            }
+        }
 
         Thread* out = readyList->RemoveFront();
 
-        // while (temp->NumInList()>0){
-        //      readyList->Insert(temp->RemoveFront());
-        // }
+        while (temp->NumInList()>0){
+             readyList->Insert(temp->RemoveFront());
+        }
 
-        //cout<<"Readylist of size "<<readyList->NumInList()<<" after\n";
-
-        //delete temp;
+        delete temp;
 
         return out;
     }
