@@ -75,7 +75,34 @@ Thread *Scheduler::FindNextToRun() {
     if (readyList->IsEmpty()) {
         return NULL;
     } else {
-        return readyList->RemoveFront();
+        cout<<"Readylist of size "<<readyList->NumInList()<<" before\n";
+        //auto temp = new SortedList<Thread *>(comp_thrd);
+        int num = std::rand();
+        int size = readyList->NumInList()+1;
+        int total = size*(size+1)/2;
+        num = num%size;
+        // while (readyList->NumInList()>0) {
+        //     auto elem = readyList->RemoveFront();
+        //     num-=elem->processID+1;
+        //     if (num>0 && readyList->NumInList()){
+        //         temp->Insert(elem);
+        //     }else{
+        //         readyList->Insert(elem);
+        //         break;
+        //     }
+        // }
+
+        Thread* out = readyList->RemoveFront();
+
+        // while (temp->NumInList()>0){
+        //      readyList->Insert(temp->RemoveFront());
+        // }
+
+        //cout<<"Readylist of size "<<readyList->NumInList()<<" after\n";
+
+        //delete temp;
+
+        return out;
     }
 }
 
